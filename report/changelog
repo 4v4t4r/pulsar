@@ -1,0 +1,13 @@
+# Changes
+# 0.0.1: Thu  7 Aug 2014 07:57:30 EST
+# Initial version
+# 0.0.2: Thu  7 Aug 2014 08:48:25 EST
+# Added code to update module file
+# 0.0.3: Fri  8 Aug 2014 08:43:34 EST
+# Fixed module file update
+# 0.0.4: Tue 12 Aug 2014 09:53:15 EST
+# Migrated to new method
+# 0.0.5: Tue 19 Aug 2014 07:56:58 EST
+# Improved manifest directory determination
+# 0.0.6: Tue 19 Aug 2014 08:11:42 EST
+# Added detailed report option
