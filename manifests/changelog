@@ -471,3 +471,6 @@
 # More fixes for check value routine
 # 2.3.8: Tue 19 Aug 2014 21:45:06 EST
 # Fixed TCP strength class
+# 2.3.9: Wed 20 Aug 2014 20:33:12 EST
+# Added service determination to check_service
+

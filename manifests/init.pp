@@ -1,5 +1,5 @@
 # Name:         pulsar (Puppet Unix Lockdown Security Analysis Report)
-# Version:      2.3.6
+# Version:      2.3.9
 # Release:      1
 # License:      Open Source
 # Group:        System
@@ -1421,8 +1421,7 @@ define enable_tcpwrappers () {
 define disable_service () {
   $status  = "disabled"
   $message = "Disabling ${name}"
-  handle_service { $message:
-    service => $name,
+  check_service { $name:
     status  => $status,
   }
 }
@@ -1432,40 +1431,299 @@ define disable_service () {
 define enable_service () {
   $status  = "enabled"
   $message = "Enabling ${name}"
-  handle_service { $message:
-    service => $name,
+  check_service { $name:
     status  => $status,
   }
 }
 
 # Handle service
 
-define handle_service ($service, $status) {
+define check_service ($status) {
   $fact = $pulsar_systemservices
+  if $kernel == "SunOS" and $kernelrelease =~ /10|11/ {
+    if $name !~ /\// {
+      case $name {
+        "mpxio":                  { $service = "svc:/system/device/mpxio-upgrade:default" }
+        "nisd":                   { $service = "svc:/network/nis/domain:default" }
+        "ipfilter":               { $service = "svc:/network/ipfilter:default" }
+        "ike":                    { $service = "svc:/network/ipsec/ike:default" }
+        "ikev2":                  { $service = "svc:/network/ipsec/ike:ikev2" }
+        "ipsec":                  { $service = "svc:/network/ipsec/manual-key:default" }
+        /named|bind/:             { $servicue = "svc:/system/name-service-cache:default" }
+        "ldap":                   { $service = "svc:/network/ldap/client:default" }
+        "nis":                    { $service = "svc:/network/nis/client:default" }
+        /inetd/:                  { $service = "svc:/network/inetd-upgrade:default" }
+        /nfsstat/:                { $service = "svc:/network/nfs/status:default" }
+        /lock/:                   { $service = "svc:/network/nfs/nlockmgr:default" }
+        /cbd/:                    { $service = "svc:/network/nfs/cbd:default" }
+        /idmap/:                  { $service = "svc:/system/idmap:default" }
+        /mapid/:                  { $service = "svc:/network/nfs/mapid:default" }
+        /keyserv/:                { $service = "svc:/network/rpc/keyserv:default" }
+        /^nfs$|nfs-client/:       { $service = "svc:/network/nfs/client:default" }
+        /kerberos/:               { $service = "svc:/system/kerberos/install:default" }
+        "policy":                 { $service = "svc:/system/device/policy-upgrade:default" }
+        /smtp/:                   { $service = "svc:/network/smtp:sendmail" }
+        /smb|samba/:              { $service = "svc:/network/smb/client:default" }
+        /pools/:                  { $service = "svc:/system/pools:default" }
+        /rcap/:                   { $service = "svc:/system/rcap:default" }
+        /reparse/:                { $service = "svc:/system/filesystem/reparse:default" }
+        /nfsd/:                   { $service = "svc:/network/nfs/server:default" }
+        /tcsd/:                   { $service = "svc:/application/security/tcsd:default" }
+        /net-snmp|^snmp$/:        { $service = "svc:/application/management/net-snmp:default" }
+        /repository/:             { $service = "svc:/application/pkg/system-repository:default" }
+        /mirror/:                 { $service = "svc:/application/pkg/mirror:default" }
+        /proxyd/:                 { $service = "svc:/application/pkg/zones-proxyd:default" }
+        /ntp/:                    { $service = "svc:/network/ntp:default" }
+        /pkg-server/:             { $service = "svc:/application/pkg/server:default" }
+        /dnsmasq|avahi|mdns/:     { $service = "svc:/network/dns/multicast:default" }
+        /dynamic/:                { $service = "svc:/application/pkg/dynamic-mirror:default" }
+        /terma/:                  { $service = "svc:/system/console-login:terma" }
+        /termb/:                  { $service = "svc:/system/console-login:termb" }
+        /socket-filter/:          { $service = "svc:/network/socket-filter:kssl" }
+        /openldap|slap/:          { $service = "svc:/network/ldap/server:openldap_24" }
+        /dlmp/:                   { $service = "svc:/network/dlmp:default" }
+        /sendmail-client/:        { $service = "svc:/network/sendmail-client:default" }
+        /ipmievd/:                { $service = "svc:/network/ipmievd:default" }
+        /dns-server/:             { $service = "svc:/network/dns/server:default" }
+        /ftp/:                    { $service = "svc:/network/ftp:default" }
+        /dhcpd6/:                 { $service = "svc:/network/dhcp/server:ipv6" }
+        /relay4/:                 { $service = "svc:/network/dhcp/relay:ipv4" }
+        /relay6/:                 { $service = "svc:/network/dhcp/relay:ipv6" }
+        /slp/:                    { $service = "svc:/network/slp:default" }
+        /ipmon/:                  { $service = "svc:/network/ipmon:default" }
+        /diagnostics/:            { $service = "svc:/network/diagnostics:default" }
+        /smb/:                    { $service = "svc:/network/smb/server:default" }
+        /loadbalancer|ilb/:       { $service = "svc:/network/loadbalancer/ilb:default" }
+        "route":                  { $service = "svc:/network/routing/route:default" }
+        /rdisc/:                  { $service = "svc:/network/routing/rdisc:default" }
+        /legacy-routing6/:        { $service = "svc:/network/routing/legacy-routing:ipv4" }
+        /legacy-routing4/:        { $service = "svc:/network/routing/legacy-routing:ipv6" }
+        /ripng/:                  { $service = "svc:/network/routing/ripng:default" }
+        /wusbd/:                  { $service = "svc:/system/wusbd:default" }
+        /rda/:                    { $service = "svc:/system/rds:default" }
+        "sar":                    { $service = "svc:/system/sar:default" }
+        /flow/:                   { $service = "svc:/system/extended-accounting:flow" }
+        "net":                    { $service = "svc:/system/extended-accounting:net" }
+        /process/:                { $service = "svc:/system/extended-accounting:process" }
+        /task/:                   { $service = "svc:/system/extended-accounting:task" }
+        /pools/:                  { $service = "svc:/system/pools/dynamic:default" }
+        /fm-snmp/:                { $service = "svc:/system/fm/snmp-notify:default" }
+        /fm-notify/:              { $service = "svc:/system/fm/notify-params:default" }
+        /global/:                 { $service = "svc:/system/svc/global:default" }
+        /consadm/:                { $service = "svc:/system/consadm:default" }
+        "rad":                    { $service = "svc:/system/rad:remote" }
+        /acpi/:                   { $service = "svc:/platform/i86pc/acpihpd:default" }
+        /lpd/:                    { $service = "svc:/application/cups/in-lpd:default" }
+        /rstat/:                  { $service = "svc:/network/rpc/rstat:default" }
+        /time-dgram/:             { $service = "svc:/network/time:dgram" }
+        /time-stream/:            { $service = "svc:/network/time:stream" }
+        /stlisten/:               { $service = "svc:/network/stlisten:default" }
+        /echo-dgram/:             { $service = "svc:/network/echo:dgram" }
+        /echo-stream/:            { $service = "svc:/network/echo:stream" }
+        /eklogin/:                { $service = "svc:/network/login:eklogin" }
+        /^klogin/:                { $service = "svc:/network/login:klogin" }
+        /rlogin/:                 { $service = "svc:/network/login:rlogin" }
+        /daytim-dgram/:           { $service = "svc:/network/daytime:dgram" }
+        /daytime-stream/:         { $service = "svc:/network/daytime:stream" }
+        /ktkt/:                   { $service = "svc:/network/security/ktkt_warn:default" }
+        /kz/:                     { $service = "svc:/network/kz-migr:stream" }
+        /finger/:                 { $service = "svc:/network/finger:default" }
+        /rexec/:                  { $service = "svc:/network/rexec:default" }
+        /telnet/:                 { $service = "svc:/network/telnet:default" }
+        /rquota/:                 { $service = "svc:/network/nfs/rquota:default" }
+        "shell":                  { $service = "svc:/network/shell:default" }
+        /kshell/:                 { $service = "svc:/network/shell:kshell" }
+        /comsat/:                 { $service = "svc:/network/comsat:default" }
+        /chargen-dgram/:          { $service = "svc:/network/chargen:dgram" }
+        /chargen-stream/:         { $service = "svc:/network/chargen:stream" }
+        /discard-dgram/:          { $service = "svc:/network/discard:dgram" }
+        /discard-stream/:         { $service = "svc:/network/discard:stream" }
+        /talk/:                   { $service = "svc:/network/talk:default" }
+        /stdiscovery/:            { $service = "svc:/network/stdiscover:default" }
+        /spray/:                  { $service = "svc:/network/rpc/spray:default" }
+        /rex/:                    { $service = "svc:/network/rpc/rex:default" }
+        /rusers/:                 { $service = "svc:/network/rpc/rusers:default" }
+        /wall/:                   { $service = "svc:/network/rpc/wall:default" }
+        "sp":                     { $service = "svc:/system/sp/management:default" }
+        /restarter/:              { $service = "svc:/system/svc/restarter:default" }
+        /tcp-highspped/:          { $service = "svc:/network/tcp/congestion-control:highspeed" }
+        /stcp-newreno/:           { $service = "svc:/network/sctp/congestion-control:newreno" }
+        /tcp-vega/:               { $service = "svc:/network/tcp/congestion-control:vegas" }
+        /tcp-newreno/:            { $service = "svc:/network/tcp/congestion-control:newreno" }
+        /tcp-cubic/:              { $service = "svc:/network/tcp/congestion-control:cubic" }
+        /sctp-vega/:              { $service = "svc:/network/sctp/congestion-control:vegas" }
+        /sctp-cubic/:             { $service = "svc:/network/sctp/congestion-control:cubic" }
+        /sctp-highspeed/:         { $service = "svc:/network/sctp/congestion-control:highspeed" }
+        /socket/:                 { $service = "svc:/network/socket-config:default" }
+        /unified/:                { $service = "svc:/network/connectx/unified-driver-post-upgrade:default" }
+        /smb/:                    { $service = "svc:/network/smb:default" }
+        /netcfg/:                 { $service = "svc:/network/netcfg:default" }
+        /datalink/:               { $service = "svc:/network/datalink-management:default" }
+        /eoib/:                   { $service = "svc:/network/eoib/eoib-post-upgrade:default" }
+        /ip$|ip-interface/:       { $service = "svc:/network/ip-interface-management:default" }
+        /root/:                   { $service = "svc:/system/filesystem/root:default" }
+        /loopback/:               { $service = "svc:/network/loopback:default" }
+        /ce$|ce-controls/:        { $service = "svc:/system/resource-controls:default" }
+        /scheduler/:              { $service = "svc:/system/scheduler:default" }
+        /cryptosvc/:              { $service = "svc:/system/cryptosvc:default" }
+        /ipsecalgs/:              { $service = "svc:/network/ipsec/ipsecalgs:default" }
+        /ipmp/:                   { $service = "svc:/network/ipmp:default" }
+        /boot-archive$/:          { $service = "svc:/system/boot-archive:default" }
+        /usr/:                    { $service = "svc:/system/filesystem/usr:default" }
+        /index|man/:              { $service = "svc:/application/man-index:default" }
+        /cleanstart/:             { $service = "svc:/system/devchassis:cleanstart" }
+        /pfexec/:                 { $service = "svc:/system/pfexec:default" }
+        /uucp/:                   { $service = "svc:/network/uucp-lock-cleanup:default" }
+        /vbios/:                  { $service = "svc:/system/vbiosd:default" }
+        /hostid/:                 { $service = "svc:/system/hostid:default" }
+        /gconf/:                  { $service = "svc:/application/desktop-cache/gconf-cache:default" }
+        /rmtmp/:                  { $service = "svc:/system/rmtmpfiles:default" }
+        /extensions/:             { $service = "svc:/system/security/security-extensions:default" }
+        /uvfs/:                   { $service = "svc:/system/filesystem/uvfs-instclean:default" }
+        /mime-cache/:             { $service = "svc:/application/desktop-cache/desktop-mime-cache:default" }
+        /mime-types/:             { $service = "svc:/application/desktop-cache/mime-types-cache:default" }
+        /dbus/:                   { $service = "svc:/system/dbus:default" }
+        /monitoring/:             { $service = "svc:/system/zones-monitoring:default" }
+        /pkgserv/:                { $service = "svc:/system/pkgserv:default" }
+        /sysevent/:               { $service = "svc:/system/sysevent:default" }
+        /utmp/:                   { $service = "svc:/system/utmp:default" }
+        /environ/:                { $service = "svc:/system/environment:init" }
+        /devfsadm/:               { $service = "svc:/system/devfsadm:default" }
+        /npiv/:                   { $service = "svc:/network/npiv_config:default" }
+        /logadm/:                 { $service = "svc:/system/logadm-upgrade:default" }
+        /fabric/:                 { $service = "svc:/system/device/fc-fabric:default" }
+        /unconfig/:               { $service = "svc:/milestone/unconfig:default" }
+        /devices/:                { $service = "svc:/milestone/devices:default" }
+        /rad/:                    { $service = "svc:/system/rad:local" }
+        /resource/:               { $service = "svc:/system/resource-mgmt:default" }
+        /ilom/:                   { $service = "svc:/network/ilomconfig-interconnect:default" }
+        /desktop/:                { $service = "svc:/application/desktop-cache/input-method-cache:default" }
+        /pixbuf/:                 { $service = "svc:/application/desktop-cache/pixbuf-loaders-installer:default" }
+        /icon/:                   { $service = "svc:/application/desktop-cache/icon-cache:default" }
+        /import/:                 { $service = "svc:/system/manifest-import:default" }
+        /install/:                { $service = "svc:/network/install:default" }
+        /coreadm/:                { $service = "svc:/system/coreadm:default" }
+        /timezone/:               { $service = "svc:/system/timezone:default" }
+        /config-user/:            { $service = "svc:/system/config-user:default" }
+        /keymap/:                 { $service = "svc:/system/keymap:default" }
+        /ca$|certificate/:        { $service = "svc:/system/ca-certificates:default" }
+        /node/:                   { $service = "svc:/system/identity:node" }
+        /picl/:                   { $service = "svc:/system/picl:default" }
+        /location/:               { $service = "svc:/network/location:default" }
+        /identity/:               { $service = "svc:/system/identity:domain" }
+        /ipsec-policy|ipsec$/:    { $service = "svc:/network/ipsec/policy:default" }
+        /switch/:                 { $service = "svc:/system/name-service/switch:default" }
+        /single/:                 { $service = "svc:/milestone/single-user:default" }
+        /fcoe/:                   { $service = "svc:/system/fcoe_initiator:default" }
+        /dns/:                    { $service = "svc:/network/dns/client:default" }
+        /iptun/:                  { $service = "svc:/network/iptun:default" }
+        /font|fc-cache/:          { $service = "svc:/application/font/fc-cache:default" }
+        /fedfs/:                  { $service = "svc:/network/nfs/fedfs-client:default" }
+        /resolv/:                 { $service = "svc:/milestone/name-services:default" }
+        /netmask/:                { $service = "svc:/network/netmask:default" }
+        /network/:                { $service = "svc:/network/service:default" }
+        /auditset/:               { $service = "svc:/system/auditset:default" }
+        /iscsi$|target/:          { $service = "svc:/network/iscsi/initiator:default" }
+        /nscd/:                   { $service = "svc:/system/name-service/cache:default" }
+        /routing/:                { $service = "svc:/network/routing-setup:default" }
+        /filesystem/:             { $service = "svc:/system/filesystem/local:default" }
+        /vboxmslnk/:              { $service = "svc:/application/virtualbox/vboxmslnk:default" }
+        /shares|export/:          { $service = "svc:/network/shares:default" }
+        /ufs|quota/:              { $service = "svc:/system/filesystem/ufs/quota:default" }
+        /loader/:                 { $service = "svc:/system/boot-loader-update:default" }
+        /hotplug/:                { $service = "svc:/system/hotplug:default" }
+        /power/:                  { $service = "svc:/system/power:default" }
+        /cron/:                   { $service = "svc:/system/cron:default" }
+        /compliance/:             { $service = "svc:/application/security/compliance:default" }
+        /rpc/:                    { $service = "svc:/network/rpc/bind:default" }
+        /autofs/:                 { $service = "svc:/system/filesystem/autofs:default" }
+        /inetd/:                  { $service = "svc:/network/inetd:default" }
+        /vboxd/:                  { $service = "svc:/application/virtualbox/vboxservice:default" }
+        /cups/:                   { $service = "svc:/application/cups/scheduler:default" }
+        /repositories/:           { $service = "svc:/application/pkg/repositories-setup:default" }
+        /ssh/:                    { $service = "svc:/network/ssh:default" }
+        /gss/:                    { $service = "svc:/network/rpc/gss:default" }
+        /sms/:                    { $service = "svc:/network/rpc/smserver:default" }
+        /tftp6|tftpd6/:           { $service = "svc:/network/tftp/udp6:default" }
+        /apache/:                 { $service = "svc:/network/http:apache22" }
+        /boot-archive-update/:    { $service = "svc:/system/boot-archive-update:default" }
+        /assembly/:               { $service = "svc:/milestone/self-assembly-complete:default" }
+        /^syslog/:                { $service = "svc:/system/system-log:default" }
+        /hal/:                    { $service = "svc:/system/hal:default" }
+        /rmvolmgr/:               { $service = "svc:/system/filesystem/rmvolmgr:default" }
+        /dumpadm/:                { $service = "svc:/system/dumpadm:default" }
+        /auditd/:                 { $service = "svc:/system/auditd:default" }
+        /console/:                { $service = "svc:/system/console-login:default" }
+        /vtd/:                    { $service = "svc:/system/vtdaemon:default" }
+        /user/:                   { $service = "svc:/milestone/multi-user:default" }
+        /vt3/:                    { $service = "svc:/system/console-login:vt3" }
+        /fmd/:                    { $service = "svc:/system/fmd:default" }
+        /vt4/:                    { $service = "svc:/system/console-login:vt4" }
+        /asr/:                    { $service = "svc:/system/fm/asr-notify:default" }
+        /vt6/:                    { $service = "svc:/system/console-login:vt6" }
+        /vt5/:                    { $service = "svc:/system/console-login:vt5" }
+        /vt2/:                    { $service = "svc:/system/console-login:vt2" }
+        /initrd/:                 { $service = "svc:/system/intrd:default" }
+        /boot/:                   { $service = "svc:/system/boot-config:default" }
+        /server/:                 { $service = "svc:/milestone/multi-user-server:default" }
+        /ocm/:                    { $service = "svc:/system/ocm:default" }
+        "dhcp":                   { $service = "svc:/network/dhcp/server:ipv4" }
+        /zones-install/:          { $service = "svc:/system/zones-install:default" }
+        "zones":                  { $service = "svc:/system/zones:default" }
+        /stosreg/:                { $service = "svc:/application/stosreg:default" }
+        /ndp/:                    { $service = "svc:/network/routing/ndp:default" }
+        /devchassis/:             { $service = "svc:/system/devchassis:daemon" }
+        /puppet|puppet-agent/:    { $service = "svc:/application/puppet:agent" }
+        /puppetd|puppet-master/:  { $service = "svc:/application/puppet:master" }
+        /tex/:                    { $service = "svc:/application/texinfo-update:default" }
+        /console-rest/:           { $service = "svc:/system/console-reset:default" }
+        /notify/:                 { $service = "svc:/system/fm/smtp-notify:default" }
+      }
+    }
+    else {
+      if $kernel == "Darwin" {
+        if $name !~ /\// {
+          $temp = "/System/Library/LaunchDaemons/${name}"
+        }
+        else {
+          $temp = $name
+        }
+        if $temp !~ /plist/ {
+          $service = "${temp}.plist"
+        }
+        else {
+          $service = $temp
+        }
+      }
+    }
+  }
+  else {
+    $service = $name
+  }
   $secure  = "Service \"${service}\" is ${status}"
   $warning = "Service \"${service}\" is not ${status}"
   if $kernel == "Darwin" {
-    $enable  = "/usr/bin/sudo /bin/launchctl load -w /System/Library/LaunchDaemons/${service_name}.plist"
-    $disable = "/usr/bin/sudo /bin/launchctl unload -w /System/Library/LaunchDaemons/${service_name}.plist"
+    $enable  = "/usr/bin/sudo /bin/launchctl load -w /System/Library/LaunchDaemons/${service}.plist"
+    $disable = "/usr/bin/sudo /bin/launchctl unload -w /System/Library/LaunchDaemons/${service}.plist"
   }
   if $kernel == "Linux" {
     if $lsbdistid =~ /CentOS|Red|Scientific|SuSE/ {
-      $enable  = "/usr/bin/sudo /sbin/chkconfig ${service_name} on"
-      $disable = "/usr/bin/sudo /sbin/chkconfig ${service_name} off"
+      $enable  = "/usr/bin/sudo /sbin/chkconfig ${service} on"
+      $disable = "/usr/bin/sudo /sbin/chkconfig ${service} off"
     }
     if $lsbdistid =~ /Debian|Ubuntu/ {
-      $enable  = "/usr/bin/sudo /usr/bin/update-rc.d ${service_name} enable ; /usr/bin/sudo /usr/bin/service ${service_name} start"
-      $disable = "/usr/bin/sudo /usr/bin/update-rc.d ${service_name} disable ; /usr/bin/sudo /usr/bin/service ${service_name} stop"
+      $enable  = "/usr/bin/sudo /usr/bin/update-rc.d ${service} enable ; /usr/bin/sudo /usr/bin/service ${service} start"
+      $disable = "/usr/bin/sudo /usr/bin/update-rc.d ${service} disable ; /usr/bin/sudo /usr/bin/service ${service} stop"
     }
   }
   if $kernel == "SunOS" {
     if $kernelrelease =~ /10|11/ {
-      $enable  = "/usr/bin/sudo /usr/bin/svcadm enable ${service_name}"
-      $disable = "/usr/bin/sudo /usr/bin/svcadm disable ${service_name}"
+      $enable  = "/usr/bin/sudo /usr/bin/svcadm enable ${service}"
+      $disable = "/usr/bin/sudo /usr/bin/svcadm disable ${service}"
     }
     else {
-      $enable  = "for i in `find /etc/rc*.d/_[S,K]*${service_name}` ; do export j=`echo $i |sed 's/_//g'` ; echo \"mv $i $j\" |sh ; done"
-      $disable = "for i in `find /etc/rc*.d/[S,K]*${service_name}` ; do export j=`echo $i |sed 's/[S,K]/_&/g'` ; echo \"mv $i $j\" |sh ; done"
+      $enable  = "for i in `find /etc/rc*.d/_[S,K]*${service}` ; do export j=`echo $i |sed 's/_//g'` ; echo \"mv $i $j\" |sh ; done"
+      $disable = "for i in `find /etc/rc*.d/[S,K]*${service}` ; do export j=`echo $i |sed 's/[S,K]/_&/g'` ; echo \"mv $i $j\" |sh ; done"
     }
   }
   if $status =~ /enabled|on|true/ {
