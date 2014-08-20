@@ -79,13 +79,17 @@ Documentation
 -------------
 
 [Introduction](https://github.com/lateralblast/pulsar/wiki/1.-Introduction)
+
 [Installation](https://github.com/lateralblast/pulsar/wiki/2.-Installation)
+
 [Usage](https://github.com/lateralblast/pulsar/wiki/3.-Usage)
+
 [Examples](https://github.com/lateralblast/pulsar/wiki/4.-Examples)
 - [OSX](https://github.com/lateralblast/pulsar/wiki/4.1.-OSX)
 - [Linux](https://github.com/lateralblast/pulsar/wiki/4.2.-Linux)
 - [Solaris](https://github.com/lateralblast/pulsar/wiki/4.3.-Solaris)
 - [AIX](https://github.com/lateralblast/pulsar/wiki/4.4.-AIX)
+
 [Challenges](https://github.com/lateralblast/pulsar/wiki/5.-Challenges)
 
 
