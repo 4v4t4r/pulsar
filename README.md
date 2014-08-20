@@ -91,6 +91,8 @@ Documentation
 - [Solaris](https://github.com/lateralblast/pulsar/wiki/4.3.-Solaris)
 - [AIX](https://github.com/lateralblast/pulsar/wiki/4.4.-AIX)
 
-[Challenges](https://github.com/lateralblast/pulsar/wiki/5.-Challenges)
+[Classes](https://github.com/lateralblast/pulsar/wiki/5.-Classes)
+
+[Challenges](https://github.com/lateralblast/pulsar/wiki/6.-Challenges)
 
 
