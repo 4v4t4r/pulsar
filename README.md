@@ -4,11 +4,11 @@ Background
 Pulsar (Puppet Unix Lockdown Security Analysis Report) was developed with the
 goal of having a tool that could report on and lockdown a Unix machine according
 to a security baseline. It is based on CIS and other frameworks. It is also based
-on an earlier security audit script I wrote which ran as a shell script (lunar).
+on an earlier security audit script I wrote which ran as a shell script ([lunar](https://github.com/lateralblast/lunar)).
 
 It was developed with puppet in mind as a lot of the customers I deal with use
 Puppet as a configuration management tool. As I also wanted and need an audit
-tool I could run from the command lime (much like lunar), it differs a little
+tool I could run from the command lime (much like [lunar](https://github.com/lateralblast/lunar)), it differs a little
 from a standard Puppet module in that it can produce a report without making
 changes (much like a Puppet noop run, except that a audit report is generated).
 
@@ -65,13 +65,13 @@ Status
   - Testing is required on AIX and FreeBSD
 - Lockdown testing is in progress
   - Recommed using for reporting only until I remove this note
-  - As part of the lockdown mode I hope to have a backup function like I implemented with lunar
+  - As part of the lockdown mode I hope to have a backup function like I implemented with [lunar](https://github.com/lateralblast/lunar)
 - Components nearing completion
   - Xinetd service support
   - Improved file editing module
     - Supports configuration files with stanzas, e.g. [Server]
 - Things to add
-  - A scoring system like lunar
+  - A scoring system like [lunar](https://github.com/lateralblast/lunar)
   - PDF output for report
 
 
