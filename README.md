@@ -27,6 +27,8 @@ Having said this there are things I like about Puppet, including the change in
 approach to IT delivery processes and thinking it has inspired by its wide
 adoptance.
 
+Pulsar uses [faust](https://github.com/lateralblast/faust) to create the custom facts.
+
 License
 -------
 
@@ -73,7 +75,6 @@ Status
 - Things to add
   - A scoring system like [lunar](https://github.com/lateralblast/lunar)
   - PDF output for report
-
 
 Documentation
 -------------
