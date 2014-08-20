@@ -34,29 +34,6 @@ This software is licensed as CC-BA (Creative Commons By Attrbution)
 
 http://creativecommons.org/licenses/by/4.0/legalcode
 
-Installation
-------------
-
-Steps:
-
-- Install pulsar
-  - Copy the contents of pulsar directory to /etc/puppet/modules/pulsar, or
-  - Symlink pulsar directory to /etc/puppet/modules/pulsar
-- Add basemodulepath = /etc/puppet/modules to [main] section of /etc/puppet/puppet.conf
-- Install faust
-  - Add faust lib/facter directory to FACTERLIB
-- Add Ruby environment variables to assist with memory usage
-
-Example Ruby environment variables:
-
-```
-export RUBY_HEAP_MIN_SLOTS=800000
-export RUBY_HEAP_FREE_MIN=500000
-export RUBY_HEAP_SLOTS_INCREMENT=300000
-export RUBY_HEAP_SLOTS_GROWTH_FACTOR=1
-export RUBY_GC_MALLOC_LIMIT=79000000
-```
-
 Features
 --------
 
@@ -95,36 +72,21 @@ Status
     - Supports configuration files with stanzas, e.g. [Server]
 - Things to add
   - A scoring system like lunar
+  - PDF output for report
 
-Issues and Challenges
----------------------
 
-Implementing this in Puppet required numerous challenges to be covercome.
-Some of those challenges are documented below.
+Documentation
+-------------
 
-- Having too many custom facts causes Puppet to use large amounts of memory
-  - This seems to be in part due to the memory allocation and garbage collection of Ruby
-    - I've include environment variables to deal with this
-    - These are used in the wrapper script to speed things up and prevent Puppet running out of memory
-  - I've seen it get to over 1.5G in size before running out of memory
-  - This necessitated me reducing the number of custom facts
-- Inline templates are used which while increasing flexibility slighly reduce speed of operation
-  - I've broken the report in to sub reports to make debugging faster
-- Although the approach to locking down Unix is common across platforms the methods/commands differ
-  - I've tried to abstract the routines/classes as much as possible
-  - I've used custom facts (with the help of faust) to help hide the complexity
-- Due to the way the puppet DSL works for classes each name must be unique
-  - This makes it more difficult to abstract code and thus reduce the amount of code required
-  - In my opinion this is one of the main draw backs to Puppet
-    - This leads to significant implementation overhead
-    - This also leads to a significant reduction in flexibility compared to other configuration management tools
-    - A configuration file to puppet configuration file script would be a useful tool
-  - It does however require you to be more descriptive and exact
-    - This isn't such a bad thing in regards to configuration files
-    - Having said this I've seen a simple change stop access to hundreds of machines
-      - Puppet doesn't stop the need for solid processes for change management
-- Puppet takes more of an authorative/descriptive approach to configuration
-  - In the real world puppet has to work along side other tools
+[Introduction](https://github.com/lateralblast/pulsar/wiki/1.-Introduction)
+[Installation](https://github.com/lateralblast/pulsar/wiki/2.-Installation)
+[Usage](https://github.com/lateralblast/pulsar/wiki/3.-Usage)
+[Examples](https://github.com/lateralblast/pulsar/wiki/4.-Examples)
+- [OSX](https://github.com/lateralblast/pulsar/wiki/4.1.-OSX)
+- [Linux](https://github.com/lateralblast/pulsar/wiki/4.2.-Linux)
+- [Solaris](https://github.com/lateralblast/pulsar/wiki/4.3.-Solaris)
+- [AIX](https://github.com/lateralblast/pulsar/wiki/4.4.-AIX)
+[Challenges](https://github.com/lateralblast/pulsar/wiki/5.-Challenges)
 
 Examples
 --------

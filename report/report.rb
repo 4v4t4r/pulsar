@@ -235,15 +235,19 @@ def get_avail_modules()
       end
     end
   end
+  module_list.push("full")
   return module_list
 end
 
 def list_modules()
+  puts
   puts "Available modules:"
+  puts
   module_list = get_avail_modules()
   module_list.each do |module_name|
     puts module_name
   end
+  puts
   return
 end
 

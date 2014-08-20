@@ -263,6 +263,7 @@ define check_value ($path = "", $fact = "", $param = "", $value = "", $line = ""
       "inetd":                      { $file = "/etc/default/inetd" }
       "inetinit":                   { $file = "/etc/default/inetinit" }
       "keyserv":                    { $file = "/etc/default/keyserv" }
+      "login":                      { $file = "/etc/default/login" }
       "limits":                     { $file = "/etc/security/limits.conf" }
       "mail":                       { $file = "/etc/sysconfig/mail" }
       "modprobe":                   { $file = "/etc/modprobe.conf" }
@@ -348,6 +349,7 @@ define check_value ($path = "", $fact = "", $param = "", $value = "", $line = ""
       "keyserv":                    { $info = $pulsar_keyserv }
       "inetinit":                   { $info = $pulsar_inetinit }
       "limits":                     { $info = $pulsar_limits }
+      "login":                      { $info = $pulsar_login }
       "mail":                       { $info = $pulsar_mail }
       "modprobe":                   { $info = $pulsar_modprobe }
       "nddnetwork":                 { $info = $pulsar_nddnetwork }

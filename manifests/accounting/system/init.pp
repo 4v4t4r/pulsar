@@ -296,7 +296,7 @@ class pulsar::accounting::system::init {
 class pulsar::accounting::system::pre {
   if $pulsar_modules =~ /accounting|full/ {
     if $kernel == "Linux" {
-      add_line_to_file { "-f 1": path => "auditrules"}
+      add_line_to_file { "-f 1": path => "auditrules" }
     }
   }
 }
@@ -304,7 +304,7 @@ class pulsar::accounting::system::pre {
 class pulsar::accounting::system::post {
   if $pulsar_modules =~ /accounting|full/ {
     if $kernel == "Linux" {
-      add_line_to_file { "-e 2": path => "auditrules", }
+      add_line_to_file { "-e 2": path => "auditrules" }
     }
   }
 }
